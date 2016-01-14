@@ -61,6 +61,7 @@ export default class CodeMirrorBlocks {
     this.undoKeys = [];
     this.redoKeys = [];
     this.keyMap = CodeMirror.keyMap[this.cm.getOption('keyMap')];
+    this.breadcrumb = false;
 
     Object.assign(
       this.cm.getWrapperElement(),
@@ -179,6 +180,7 @@ export default class CodeMirrorBlocks {
   render() {
     this.ast = this.parser.parse(this.cm.getValue());
     this._clearMarks();
+    this.breadcrumb = false;
     for (let rootNode of this.ast.rootNodes) {
       render(rootNode, this.cm, this.renderOptions || {});
     }
@@ -394,6 +396,17 @@ export default class CodeMirrorBlocks {
     return null;
   }
 
+  dropOntoLiteral(sourceNode, destinationNode) {
+    let sourceNodeText = this.cm.getRange(sourceNode.from, sourceNode.to)
+    if (this.cm.indexFromPos(sourceNode.from) < this.cm.indexFromPos(destinationNode.from)) {
+      this.cm.replaceRange(sourceNodeText, destinationNode.from, destinationNode.to);
+      this.cm.replaceRange('', sourceNode.from, sourceNode.to);
+    } else {
+      this.cm.replaceRange('', sourceNode.from, sourceNode.to);
+      this.cm.replaceRange(sourceNodeText, destinationNode.from, destinationNode.to);
+    }
+  }
+
   dropOntoNode(destinationNode, event) {
     if (!this.isDropTarget(event.target)) {
       // not a drop taret, just return
@@ -433,13 +446,7 @@ export default class CodeMirrorBlocks {
 
     this.cm.operation(() => {
       if (destinationNode && destinationNode.type == 'literal') {
-        if (this.cm.indexFromPos(sourceNode.from) < this.cm.indexFromPos(destinationNode.from)) {
-          this.cm.replaceRange(sourceNodeText, destinationNode.from, destinationNode.to);
-          this.cm.replaceRange('', sourceNode.from, sourceNode.to);
-        } else {
-          this.cm.replaceRange('', sourceNode.from, sourceNode.to);
-          this.cm.replaceRange(sourceNodeText, destinationNode.from, destinationNode.to);
-        }
+        this.dropOntoLiteral(sourceNode, destinationNode);
       } else {
         if (this.willInsertNode) {
           // give client code an opportunity to modify the sourceNodeText before
@@ -468,6 +475,30 @@ export default class CodeMirrorBlocks {
         }
       }
     });
+  }
+
+  toggleBreadcrumb() {
+    if(this.breadcrumb) {
+      this.breadcrumb.el.classList.remove('blocks-breadcrumb');
+      let aria = this.breadcrumb.el.getAttribute('aria-label');
+      this.breadcrumb.el.setAttribute('aria-label', aria.replace('ready to insert. ',''));
+      this.breadcrumb = false;
+    } else {
+      this.breadcrumb = this.getSelectedNode();
+      this.breadcrumb.el.classList.add('blocks-breadcrumb');
+      let aria = this.breadcrumb.el.getAttribute('aria-label');
+      this.breadcrumb.el.setAttribute('aria-label', 'ready to insert. '+aria);
+    }
+  }
+
+  replaceNodeWithBreadcrumb(node){
+    if(this.breadcrumb && node.type == "literal" && !this.breadcrumb.el.contains(node.el)){
+      console.log('replacing '+node.el.innerText+' with '+ this.breadcrumb.el.innerText);
+      this.dropOntoLiteral(this.breadcrumb, node);
+    } else {
+      console.log('invalid replace!');
+    }
+    
   }
 
   insertionQuarantine(e) {
@@ -499,6 +530,10 @@ export default class CodeMirrorBlocks {
       this.selectNextNode(event);
     } else if (keyName == "Shift-Tab") {
       this.selectPrevNode(event);
+    } else if (["Cmd-B", "Ctrl-B"].includes(keyName) && selectedNode) {
+      this.toggleBreadcrumb();
+    } else if (keyName == "Alt-B" && selectedNode) {
+      this.replaceNodeWithBreadcrumb(selectedNode);
     } else {
       let command = this.keyMap[keyName];
       if (typeof command == "string") {
