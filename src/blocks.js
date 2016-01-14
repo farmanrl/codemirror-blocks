@@ -98,14 +98,14 @@ export default class CodeMirrorBlocks {
   }
 
   setBlockMode(mode) {
-    if (mode === this.blockMode) {
-      return;
-    }
+    this.render();
     this.blockMode = mode;
     if (this.blockMode) {
-      this.render();
+      this.cm.getWrapperElement().classList.add('blocks');
+      this.cm.getWrapperElement().classList.remove('text');
     } else {
-      this.cm.getAllMarks().forEach(marker => marker.clear());
+      this.cm.getWrapperElement().classList.add('text');
+      this.cm.getWrapperElement().classList.remove('blocks');
     }
   }
 
