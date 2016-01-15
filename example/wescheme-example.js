@@ -47,6 +47,6 @@ var blocks = new CodeMirrorBlocks(
     }
   }
 );
-blocks.setBlockMode(true);
+blocks.setBlockMode('blocks');
 
 document.getElementById('mode').onchange = function(e){ blocks.setBlockMode(e.target.checked); };

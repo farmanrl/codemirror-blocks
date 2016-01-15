@@ -40,4 +40,4 @@ var blocks = new CodeMirrorBlocks(
       return sourceNodeText;
     }
   });
-blocks.setBlockMode(true);
+blocks.setBlockMode('blocks');
