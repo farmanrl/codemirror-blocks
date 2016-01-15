@@ -7,7 +7,6 @@
     "babel-polyfill": "^6.3.14",
     "codemirror": "git://github.com/codemirror/CodeMirror/",
     "handlebars": "^4.0.5",
-    "htmlclean": "^2.7.6",
     "node-uuid": "^1.4.7"
   },
   "devDependencies": {

@@ -36,7 +36,7 @@ export function renderHTMLString(node) {
 
 export default function render(rootNode, cm, options={}) {
   nodesInRenderOrder = [];
-  var rootNodeFrag = createFragment(require('htmlclean')(renderHTMLString(rootNode)));
+  var rootNodeFrag = createFragment(renderHTMLString(rootNode).replace(/>\s*</g,'><'));
   let hiddenTypes = null;
   if (options.hideNodesOfType) {
     hiddenTypes = new Set(options.hideNodesOfType);
