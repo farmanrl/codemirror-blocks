@@ -1,9 +1,13 @@
 {{#> node type="struct"}}
+<span class="blocks-hidden">(</span>
 <span class="blocks-operator">define-struct</span>
 <span class="blocks-args">
   <span class="blocks-name">{{node.name}}</span>
+  <span class="blocks-hidden">(</span>
   {{#each node.fields}}
   <span class="blocks-literal">{{this}}</span>
   {{/each}}
+  <span class="blocks-hidden">)</span>
 </span>
+<span class="blocks-hidden">)</span>
 {{/node}}

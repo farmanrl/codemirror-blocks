@@ -49,4 +49,4 @@ var blocks = new CodeMirrorBlocks(
 );
 blocks.setBlockMode('blocks');
 
-document.getElementById('mode').onchange = function(e){ blocks.setBlockMode(e.target.checked); };
+document.getElementById('mode').onchange = function(e){ blocks.setBlockMode(e.target.checked? "blocks" : "text"); };

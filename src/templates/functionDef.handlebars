@@ -1,10 +1,14 @@
 {{#> node type="functionDef"}}
+<span class="blocks-hidden">(</span>
 <span class="blocks-operator">define</span>
 <span class="blocks-args">
+  <span class="blocks-hidden">(</span>
   <span class="blocks-name">{{node.name}}</span>
   {{#each node.args}}
   <span class="blocks-literal">{{this}}</span>
   {{/each}}
+  <span class="blocks-hidden">)</span>
   {{{renderNode node.body cm callback}}}
 </span>
+<span class="blocks-hidden">)</span>
 {{/node}}
