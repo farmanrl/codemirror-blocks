@@ -15,6 +15,131 @@
 @hover-drop-background-color: lightblue;
 @hover-replace-background-color: red;
 
+
+.blocks-struct,
+.blocks-functionDef,
+.blocks-variableDef,
+.blocks-expression,
+.blocks-unknown {
+  color: black;
+  white-space: nowrap;
+  border: @border-width solid transparent;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.blocks-name,
+.blocks-literal,
+.blocks-blank {
+  border: @border-width solid transparent;
+  cursor: hand;
+
+  &.blocks-editing, &.blocks-quarantine {
+    border-color: @editing-border-color;
+    &.blocks-error {
+      border-color: @error-border-color;
+    }
+  }
+
+  &:hover {
+    border: solid @border-hint;
+  }
+
+  &.blocks-over-target {
+    background-color: @hover-replace-background-color;
+  }
+
+  * {
+    pointer-events: none;
+  }
+
+  .blocks-literal-number {
+    color: @literal-number-color;
+  }
+  .blocks-literal-string {
+    color: @literal-string-color;
+  }
+  .blocks-literal-char {
+    color: @literal-char-color;
+  }
+  .blocks-literal-boolean {
+    color: @literal-boolean-color;
+  }
+  .blocks-literal-symbol {
+    color: @literal-symbol-color;
+  }
+
+}
+
+.blocks-name {
+  color: @literal-symbol-color;
+}
+
+.blocks-node:focus {
+  border-color: @editing-border-color;
+  outline: 0;
+}
+
+.blocks-editing {
+  outline: 0;
+  cursor: text;
+
+}
+
+.blocks-over-target {
+  background-color: @hover-drop-background-color;
+  border-radius: @border-radius;
+}
+
+.blocks-white-space:before {
+  content: ' ';
+}
+
+
+.blocks-white-space {
+  &:hover {
+    background-color: @hover-drop-background-color;
+    cursor: hand;
+  }
+
+  &.blocks-editing {
+    font-weight: normal;
+    margin: 0px 5px;
+    &.blocks-error {
+      border: @border-width solid @error-border-color;
+    }
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+}
+.blocks-unknown {
+  background: rgba(255,190,190,0.5);
+}
+.blocks-comment {
+  color: @comment-color;
+  font-style: italic;
+}
+
+.blocks-dragging {
+  .blocks-white-space{ background-color: transparent; }
+}
+
+.blocks-blank {
+  cursor: hand;
+  &:after {
+    content: "?";
+    color: black;
+    width: 20px;
+  }
+  &.blocks-editing {
+    background: transparent;
+    &:after{content: none; width: 0px; }
+  }
+}
+
 .text {
   .blocks-struct,
   .blocks-functionDef,
@@ -23,16 +148,21 @@
   .blocks-unknown,
   .blocks-hidden { 
 
-  .blocks-white-space {display: inline; }
-  .blocks-white-space:last-child{ display: none; }
-  * { 
-      display: inline; 
-      padding: 0px; 
-      margin: 0px; 
-      white-space: normal;
-      height: none;
+    .blocks-white-space {display: inline; }
+    .blocks-white-space:last-child{ display: none; }
+    * { 
+        display: inline; 
+        padding: 0px; 
+        margin: 0px; 
+        white-space: normal;
+        height: none;
+      }
+    .blocks-blank {
+      &.blocks-editing {
+        display: inline-block;
+        min-width: 10px;
+      }
     }
-
   }
 }
 
@@ -55,11 +185,6 @@
     margin: 5px;
     background: #ccc;
     overflow: hidden;
-    white-space: nowrap;
-
-    cursor: grab;
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
   }
 
   .blocks-operator {
@@ -100,10 +225,8 @@
     color: black;
     border-radius: 5px;
     padding: 2px;
-    border: @border-width solid transparent;
     min-width: 10px;
     height: 1.1em;
-    cursor: hand;
 
     &.blocks-editing, &.blocks-quarantine {
       border-color: @editing-border-color;
@@ -112,54 +235,9 @@
       }
     }
 
-    &:hover {
-      border: solid @border-hint;
-    }
-
     &.blocks-over-target {
       background-color: @hover-replace-background-color;
     }
-
-    * {
-      pointer-events: none;
-    }
-
-    .blocks-literal-number {
-      color: @literal-number-color;
-    }
-    .blocks-literal-string {
-      color: @literal-string-color;
-    }
-    .blocks-literal-char {
-      color: @literal-char-color;
-    }
-    .blocks-literal-boolean {
-      color: @literal-boolean-color;
-    }
-    .blocks-literal-symbol {
-      color: @literal-symbol-color;
-    }
-
-  }
-
-  .blocks-name {
-    color: @literal-symbol-color;
-  }
-
-  .blocks-node:focus {
-    border-color: @editing-border-color;
-    outline: 0;
-  }
-
-  .blocks-editing {
-    outline: 0;
-    cursor: text;
-
-  }
-
-  .blocks-over-target {
-    background-color: @hover-drop-background-color;
-    border-radius: @border-radius;
   }
 
   .blocks-white-space:before {
@@ -177,13 +255,7 @@
     height: 1.1em;
     cursor: default;
 
-    &:hover {
-      background-color: @hover-drop-background-color;
-      cursor: hand;
-    }
-
     &.blocks-editing {
-      font-weight: normal;
       margin: 0px 5px;
       &.blocks-error {
         border: @border-width solid @error-border-color;
@@ -199,10 +271,6 @@
     >.blocks-operator{ background: rgba(0,0,0,0.5); }
     >.blocks-args    { background: rgba(255,190,190,0.5); }
   }
-  .blocks-comment {
-    color: @comment-color;
-    font-style: italic;
-  }
 
   .blocks-dragging {
     .blocks-white-space{ background-color: transparent; }
@@ -211,9 +279,7 @@
   .blocks-blank {
     color: white;
     background: gold;
-    cursor: hand;
     &:after {
-      content: "?";
       color: black;
       display: inline-block;
       width: 20px;
