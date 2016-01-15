@@ -98,19 +98,16 @@ export default class CodeMirrorBlocks {
   }
 
   setBlockMode(mode) {
-    this.render();
-    this.blockMode = mode;
-    if (this.blockMode) {
-      this.cm.getWrapperElement().classList.add('blocks');
-      this.cm.getWrapperElement().classList.remove('text');
+    if (mode === this.blockMode) {
+      return;   
+    } else if(!mode){
+      this.cm.getAllMarks().forEach(marker => marker.clear());
     } else {
-      this.cm.getWrapperElement().classList.add('text');
-      this.cm.getWrapperElement().classList.remove('blocks');
+      this.cm.getWrapperElement().classList.add(mode);
+      this.cm.getWrapperElement().classList.remove(this.blockMode);
+      this.render();
     }
-  }
-
-  toggleBlockMode() {
-    this.setBlockMode(!this.blockMode);
+    this.blockMode = mode;
   }
 
   handleChange() {
