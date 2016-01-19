@@ -32,6 +32,9 @@
 .blocks-name,
 .blocks-literal,
 .blocks-blank {
+  padding: 2px;
+  border-radius: 5px;
+
   border: @border-width solid transparent;
   cursor: hand;
 
@@ -76,11 +79,6 @@
   color: @literal-symbol-color;
 }
 
-.blocks-node:focus {
-  border-color: @editing-border-color;
-  outline: 0;
-}
-
 .blocks-editing {
   outline: 0;
   cursor: text;
@@ -92,12 +90,12 @@
   border-radius: @border-radius;
 }
 
-.blocks-white-space:before {
-  content: ' ';
-}
-
-
 .blocks-white-space {
+  padding: 2px;
+  min-width: 10px;
+  min-height: 12px;
+  display: inline-block;
+
   &:hover {
     background-color: @hover-drop-background-color;
     cursor: hand;
@@ -105,7 +103,6 @@
 
   &.blocks-editing {
     font-weight: normal;
-    margin: 0px 5px;
     &.blocks-error {
       border: @border-width solid @error-border-color;
     }
@@ -148,8 +145,6 @@
   .blocks-unknown,
   .blocks-hidden { 
 
-    .blocks-white-space {display: inline; }
-    .blocks-white-space:last-child{ display: none; }
     * { 
         display: inline; 
         padding: 0px; 
@@ -157,6 +152,13 @@
         white-space: normal;
         height: none;
       }
+    .blocks-white-space { 
+      display: inline-block; 
+      min-width: 10px; 
+      min-height: 12px;
+
+      &[contenteditable="true"]{ margin: 0px 4px; }
+    }
     .blocks-blank {
       &.blocks-editing {
         display: inline-block;
@@ -223,8 +225,6 @@
   .blocks-blank {
     display: inline-block;
     color: black;
-    border-radius: 5px;
-    padding: 2px;
     min-width: 10px;
     height: 1.1em;
 
@@ -240,13 +240,7 @@
     }
   }
 
-  .blocks-white-space:before {
-    content: ' ';
-  }
-
-
   .blocks-white-space {
-    padding: 2px;
     border: @border-width dotted lightgray;
     font-weight: bold;
     border-radius: @border-radius;
@@ -289,4 +283,16 @@
       &:after{content: none; width: 0px; }
     }
   }
+}
+
+.blocks-node:focus {
+  border-color: @editing-border-color !important;
+  outline: 0;
+}
+
+.blocks-node { transition: top 1s linear, left 1s linear; animation-duration: 1.5s; }
+@keyframes fadein {
+    0% { opacity: 0; }
+   50% { opacity: 0; }
+  100% { opacity: 1; }
 }

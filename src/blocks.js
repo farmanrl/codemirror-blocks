@@ -1,4 +1,4 @@
-import render from './render';
+import render, {prepareTransition, renderTransition} from './render';
 import CodeMirror from 'codemirror';
 
 function getLocationFromEl(el) {
@@ -98,13 +98,23 @@ export default class CodeMirrorBlocks {
   }
 
   setBlockMode(mode) {
-    if (mode === this.blockMode) {
+    // not changing anything: no-op
+    if (mode === this.blockMode) {  
       return;   
-    } else if(!mode){
+    // turning off blocks: clear all markers
+    } else if(!mode) {
       this.cm.getAllMarks().forEach(marker => marker.clear());
-    } else {
-      this.cm.getWrapperElement().classList.add(mode);
+    // animated transition: set up the animated clones, render, and animate
+    } else if (this.blockMode) {
+      let clones = prepareTransition(this.ast, this.cm);
       this.cm.getWrapperElement().classList.remove(this.blockMode);
+      this.cm.getWrapperElement().classList.add(mode);
+      this.render();
+      renderTransition(clones, this.ast, this.cm);
+    // turning on block mode for the first time: just render
+    } else {
+      this.cm.getWrapperElement().classList.remove(this.blockMode);
+      this.cm.getWrapperElement().classList.add(mode);
       this.render();
     }
     this.blockMode = mode;
@@ -179,6 +189,7 @@ export default class CodeMirrorBlocks {
     for (let rootNode of this.ast.rootNodes) {
       render(rootNode, this.cm, this.renderOptions || {});
     }
+
   }
 
   getSelectedNode() {

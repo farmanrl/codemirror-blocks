@@ -34,6 +34,39 @@ export function renderHTMLString(node) {
   return nodeEl;
 }
 
+export function prepareTransition(ast, cm) {
+  let scroller = cm.getScrollerElement();
+  let {left: offsetLeft, top: offsetTop} = scroller.getBoundingClientRect();
+  return ast.getLiterals().map(function({el: lit}) {
+    if(lit.offsetWidth === 0 && lit.offsetHeight === 0) {
+      return false;
+    }
+    let clone = lit.cloneNode(true);
+    let {left: litLeft, top: litTop} = lit.getBoundingClientRect();
+    clone.style.top = parseInt((litTop - offsetTop) + scroller.scrollTop) + "px";
+    clone.style.left= parseInt((litLeft- offsetLeft)+ scroller.scrollLeft)+ "px";
+    clone.style.position = "absolute";
+    clone.style.animation = "none";
+    scroller.appendChild(clone);
+    return clone;
+  });
+}
+export function renderTransition(clones, ast, cm) {
+  for (let node of ast.rootNodes) { node.el.style.animationName = "fadein"; }
+  let scroller = cm.getScrollerElement();
+  let {left: offsetLeft, top: offsetTop} = scroller.getBoundingClientRect();
+  ast.getLiterals().forEach(function({el: lit}, i) {
+    if(!clones[i] || lit.offsetWidth === 0 && lit.offsetHeight === 0) {
+      if(clones[i]) clones[i].remove();
+      return;
+    }
+    let {left: litLeft, top: litTop} = lit.getBoundingClientRect();
+    clones[i].style.top = parseInt((litTop - offsetTop) + scroller.scrollTop) + "px";
+    clones[i].style.left= parseInt((litLeft- offsetLeft)+ scroller.scrollLeft)+ "px";
+  });
+  setTimeout(() => clones.forEach((c) => { if(c) c.remove(); }), 1000);
+}
+
 export default function render(rootNode, cm, options={}) {
   nodesInRenderOrder = [];
   var rootNodeFrag = createFragment(renderHTMLString(rootNode).replace(/>\s*</g,'><'));
@@ -55,3 +88,5 @@ export default function render(rootNode, cm, options={}) {
   cm.markText(rootNode.from, rootNode.to, {replacedWith: rootNodeFrag.firstChild.firstChild});
   return rootNodeFrag;
 }
+
+//export function 
