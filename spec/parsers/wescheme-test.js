@@ -88,7 +88,7 @@ describe("The WeScheme Parser,", function() {
     });
 
     it("should keep track of the text of the comment", function() {
-      expect(this.ast.rootNodes[0].comment).toBe('this is a comment');
+      expect(this.ast.rootNodes[0].comment).toBe(';this is a comment');
     });
   });
 

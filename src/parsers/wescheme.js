@@ -126,7 +126,7 @@ function parseNode(node) {
     }
     return new Literal(from, to, node, dataType, {'aria-label':aria});
   } else if (node instanceof structures.comment) {
-    return new Comment(from, to, node.txt);
+    return new Comment(from, to, ";"+node.txt);
   } else if (node instanceof structures.unsupportedExpr) {
     return new Unknown(from, to, node.val.map(parseNode).filter(item => item !== null), {msg: node.errorMsg});
   }
