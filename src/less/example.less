@@ -15,83 +15,33 @@
 @hover-drop-background-color: lightblue;
 @hover-replace-background-color: red;
 
-.blocks-hidden {
-  display: none !important;
-}
 
 .blocks-struct,
 .blocks-functionDef,
 .blocks-variableDef,
 .blocks-expression,
 .blocks-unknown {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: stretch;
   color: black;
-  border: @border-width solid black;
-  border-radius: 15px;
-  margin: 5px;
-  background: #ccc;
-  overflow: hidden;
   white-space: nowrap;
-
+  border: @border-width solid transparent;
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
 }
 
-.blocks-operator {
-  display: flex;
-  justify-content: center;
-  font-weight: bold;
-  padding: 3px 5px;
-  text-align: center;
-  background: black;
-  color: white;
-
-  .blocks-literal {
-    color: white;
-    border: @border-width inset;
-  }
-
-  > .blocks-expression{
-    box-shadow: 0px 0px 10px 1px white;
-  }
-
-  .blocks-breadcrumb {
-    box-shadow: 3px 6px 26px 5px rgba(0,200,0,0.75);
-    border: solid lightgreen 3px;
-  }
-}
-
-.blocks-args {
-  display: inline-flex;
-  flex-wrap: wrap;
-  flex-grow: 1;
-  background: #eee;
-  padding: 8px 0px;
-
-  > .blocks-literal, .blocks-white-space[contenteditable="true"] {
-    background: white;
-    border: @border-width lightgray inset;
-  }
-}
 .blocks-name,
 .blocks-literal,
 .blocks-blank {
-  display: inline-block;
-  color: black;
-  border-radius: 5px;
   padding: 2px;
+  border-radius: 5px;
+
   border: @border-width solid transparent;
-  min-width: 10px;
-  height: 1.1em;
   cursor: hand;
 
   &.blocks-editing, &.blocks-quarantine {
     border-color: @editing-border-color;
     &.blocks-error {
-      border-color: @error-border-color;
+      border-color: @error-border-color !important;
     }
   }
 
@@ -122,16 +72,10 @@
   .blocks-literal-symbol {
     color: @literal-symbol-color;
   }
-
 }
 
 .blocks-name {
   color: @literal-symbol-color;
-}
-
-.blocks-node:focus {
-  border-color: @editing-border-color;
-  outline: 0;
 }
 
 .blocks-editing {
@@ -145,20 +89,11 @@
   border-radius: @border-radius;
 }
 
-.blocks-white-space:before {
-  content: ' ';
-}
-
-
 .blocks-white-space {
   padding: 2px;
-  border: @border-width dotted lightgray;
-  font-weight: bold;
-  border-radius: @border-radius;
-  margin: 0px 5px;
   min-width: 10px;
-  height: 1.1em;
-  cursor: default;
+  min-height: 12px;
+  display: inline-block;
 
   &:hover {
     background-color: @hover-drop-background-color;
@@ -167,7 +102,6 @@
 
   &.blocks-editing {
     font-weight: normal;
-    margin: 0px 5px;
     &.blocks-error {
       border: @border-width solid @error-border-color;
     }
@@ -178,9 +112,7 @@
 
 }
 .blocks-unknown {
-  border-width: 1px;
-  >.blocks-operator{ background: rgba(0,0,0,0.5); }
-  >.blocks-args    { background: rgba(255,190,190,0.5); }
+  background: rgba(255,190,190,0.5);
 }
 .blocks-comment {
   color: @comment-color;
@@ -192,13 +124,10 @@
 }
 
 .blocks-blank {
-  color: white;
-  background: gold;
   cursor: hand;
   &:after {
     content: "?";
     color: black;
-    display: inline-block;
     width: 20px;
   }
   &.blocks-editing {
@@ -207,8 +136,168 @@
   }
 }
 
-.blocks-breadcrumb {
-    box-shadow: 3px 6px 26px 0px rgba(0,0,0,0.75);
-    border: lightgreen solid 3px;
+.text {
+  .blocks-struct,
+  .blocks-functionDef,
+  .blocks-variableDef,
+  .blocks-expression,
+  .blocks-unknown,
+  .blocks-hidden { 
+
+    * { 
+        display: inline; 
+        padding: 0px; 
+        margin: 0px; 
+        white-space: normal;
+        height: none;
+      }
+    .blocks-white-space { 
+      display: inline-block; 
+      min-width: 10px; 
+      min-height: 12px;
+
+      &[contenteditable="true"]{ margin: 0px 4px; }
+    }
+    .blocks-blank {
+      &.blocks-editing {
+        display: inline-block;
+        min-width: 10px;
+      }
+    }
+  }
 }
-/*.blocks-aria-announcements { visibility: hidden; }*/
+
+.blocks {
+  .blocks-hidden {
+    display: none !important;
+  }
+
+  .blocks-struct,
+  .blocks-functionDef,
+  .blocks-variableDef,
+  .blocks-expression,
+  .blocks-unknown {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+    color: black;
+    border: @border-width solid black;
+    border-radius: 15px;
+    margin: 5px;
+    background: #ccc;
+    overflow: hidden;
+  }
+
+  .blocks-operator {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    padding: 3px 5px;
+    text-align: center;
+    background: black;
+    color: white;
+
+    .blocks-literal {
+      color: white;
+      border: @border-width inset;
+    }
+
+    > .blocks-expression{
+      box-shadow: 0px 0px 10px 1px white;
+    }
+  }
+
+  .blocks-args {
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    background: #eee;
+    padding: 8px 0px;
+
+    > .blocks-literal, .blocks-white-space[contenteditable="true"] {
+      background: white;
+      border: @border-width lightgray inset;
+    }
+  }
+  .blocks-name,
+  .blocks-literal,
+  .blocks-blank {
+    display: inline-block;
+    color: black;
+    min-width: 10px;
+    height: 1.1em;
+
+    &.blocks-editing, &.blocks-quarantine {
+      border-color: @editing-border-color;
+      &.blocks-error {
+        border-color: @error-border-color;
+      }
+    }
+
+    &.blocks-over-target {
+      background-color: @hover-replace-background-color;
+    }
+  }
+
+  .blocks-white-space {
+    border: @border-width dotted lightgray;
+    font-weight: bold;
+    border-radius: @border-radius;
+    margin: 0px 5px;
+    min-width: 10px;
+    height: 1.1em;
+    cursor: default;
+
+    &.blocks-editing {
+      margin: 0px 5px;
+      &.blocks-error {
+        border: @border-width solid @error-border-color;
+      }
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+  }
+  .blocks-unknown {
+    border-width: 1px;
+    >.blocks-operator{ background: rgba(0,0,0,0.5); }
+    >.blocks-args    { background: rgba(255,190,190,0.5); }
+  }
+
+  .blocks-dragging {
+    .blocks-white-space{ background-color: transparent; }
+  }
+
+  .blocks-blank {
+    color: white;
+    background: gold;
+    &:after {
+      color: black;
+      display: inline-block;
+      width: 20px;
+    }
+    &.blocks-editing {
+      background: transparent;
+      &:after{content: none; width: 0px; }
+    }
+  }
+}
+
+.blocks-node:focus {
+  border-color: @editing-border-color !important;
+  outline: 0;
+}
+
+.blocks-node { 
+  animation-duration: 1.5s; 
+  transition: left 1s linear,
+              top 1s linear, 
+              height 1s linear,
+              width 1s linear; 
+}
+@keyframes fadein {
+    0% { opacity: 0; }
+   50% { opacity: 0; }
+  100% { opacity: 1; }
+}

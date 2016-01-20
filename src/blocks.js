@@ -1,4 +1,4 @@
-import render from './render';
+import render, {prepareTransition, animateTransition} from './render';
 import CodeMirror from 'codemirror';
 
 function getLocationFromEl(el) {
@@ -99,19 +99,27 @@ export default class CodeMirrorBlocks {
   }
 
   setBlockMode(mode) {
-    if (mode === this.blockMode) {
-      return;
+    // not changing anything: no-op
+    if (mode === this.blockMode) {  
+      return;   
+    // turning off blocks: clear all markers
+    } else if(!mode) {
+      this.cm.getAllMarks().forEach(marker => marker.clear());
+    // animated transition: set up the animated clones, render, and animate
+    } else if (this.blockMode) {
+      let scroller = this.cm.getScrollerElement();
+      let clones = prepareTransition(this.ast, scroller);
+      this.cm.getWrapperElement().classList.remove(this.blockMode);
+      this.cm.getWrapperElement().classList.add(mode);
+      this.render();
+      animateTransition(clones, this.ast, scroller);
+    // turning on block mode for the first time: just render
+    } else {
+      this.cm.getWrapperElement().classList.remove(this.blockMode);
+      this.cm.getWrapperElement().classList.add(mode);
+      this.render();
     }
     this.blockMode = mode;
-    if (this.blockMode) {
-      this.render();
-    } else {
-      this.cm.getAllMarks().forEach(marker => marker.clear());
-    }
-  }
-
-  toggleBlockMode() {
-    this.setBlockMode(!this.blockMode);
   }
 
   handleChange() {
@@ -184,6 +192,7 @@ export default class CodeMirrorBlocks {
     for (let rootNode of this.ast.rootNodes) {
       render(rootNode, this.cm, this.renderOptions || {});
     }
+
   }
 
   getSelectedNode() {
@@ -284,6 +293,7 @@ export default class CodeMirrorBlocks {
         node.quarantine.clear(); // get rid of the quarantine bookmark
       }
       this.saveEditableEl(nodeEl, nodeEl.innerText, node);
+      this.hasInvalidEdit = false;
     } else {
       // If the node doesn't parse, wrest the focus back after a few ms
       setTimeout(() => { this.editLiteral(node, event); }, 50);

@@ -12,13 +12,15 @@ require('./example-page.css');
 var cm = CodeMirror.fromTextArea(
   document.getElementById("code"),
   {theme:'3024-day',
-   autoCloseBrackets: true}
+   autoCloseBrackets: true,
+   viewportMargin: Infinity}
 );
 
 var cm2 = CodeMirror.fromTextArea(
   document.getElementById('code2'),
   {theme:'3024-day',
-   autoCloseBrackets: true}
+   autoCloseBrackets: true,
+   viewportMargin: Infinity}
 );
 
 var code = require('./ast-test.rkt');
@@ -47,4 +49,6 @@ var blocks = new CodeMirrorBlocks(
     }
   }
 );
-blocks.setBlockMode(true);
+blocks.setBlockMode('blocks');
+
+document.getElementById('mode').onchange = function(e){ blocks.setBlockMode(e.target.checked? "blocks" : "text"); };

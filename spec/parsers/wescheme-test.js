@@ -88,15 +88,18 @@ describe("The WeScheme Parser,", function() {
     });
 
     it("should keep track of the text of the comment", function() {
-      expect(this.ast.rootNodes[0].comment).toBe('this is a comment');
+      expect(this.ast.rootNodes[0].comment).toBe(';this is a comment');
     });
   });
 
   describe("when setting aria-labels", function() {
-    it("should make symbols, numbers, and booleans be set to themselves", function() {
+    it("should make symbols and numbers be set to themselves", function() {
       expect(this.parser.parse('1').rootNodes[0].options['aria-label']).toBe('1');
       expect(this.parser.parse('symbol').rootNodes[0].options['aria-label']).toBe('symbol');
-      expect(this.parser.parse('#t').rootNodes[0].options['aria-label']).toBe('#t');
+    });
+
+    it("should make boolean values be set to 'true' or 'false'", function() {
+      expect(this.parser.parse('#t').rootNodes[0].options['aria-label']).toBe('true');
     });
 
     it("should make string values be set to 'string '+the contents of the string", function() {

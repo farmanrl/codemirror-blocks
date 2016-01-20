@@ -47,6 +47,14 @@ export class AST {
         || this.reverseRootNodes.find((node) => this.comparePos(node.to, selection) <= 0)
         || this.reverseRootNodes[0];
   }
+
+  getNodeArray() {
+    var nodes = [];
+    for (let rootNode of this.rootNodes) {
+      nodes = nodes.concat(Array.from(rootNode));
+    }
+    return nodes;
+  }
 }
 
 // Every node in the AST inherits from the `ASTNode` class, which is used to

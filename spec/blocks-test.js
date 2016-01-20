@@ -100,7 +100,7 @@ describe('The CodeMirrorBlocks Class', function() {
   describe('text marking api,', function() {
     beforeEach(function() {
       this.cm.setValue('11 12 (+ 3 4 5)');
-      this.blocks.toggleBlockMode();
+      this.blocks.setBlockMode('blocks');
       this.literal1 = this.blocks.ast.rootNodes[0];
       this.literal2 = this.blocks.ast.rootNodes[1];
       this.expression = this.blocks.ast.rootNodes[2];
@@ -177,23 +177,23 @@ describe('The CodeMirrorBlocks Class', function() {
 
     it("should render itself when block mode is turned on", function() {
       spyOn(this.blocks, 'render').and.callThrough();
-      this.blocks.toggleBlockMode();
-      expect(this.blocks.blockMode).toBe(true);
+      this.blocks.setBlockMode('blocks');
+      expect(this.blocks.blockMode).toBe('blocks');
       expect(this.blocks.ast).not.toBe(null);
       expect(this.blocks.ast.rootNodes).toEqual([]);
       expect(this.blocks.render).toHaveBeenCalled();
     });
 
     it("should do nothing if block mode does not change", function() {
-      this.blocks.setBlockMode(true);
+      this.blocks.setBlockMode('blocks');
       spyOn(this.blocks, 'render');
-      this.blocks.setBlockMode(true);
+      this.blocks.setBlockMode('blocks');
       expect(this.blocks.render).not.toHaveBeenCalled();
     });
 
     it("should automatically re-render when the content changes", function() {
       spyOn(render, 'default');
-      this.blocks.toggleBlockMode();
+      this.blocks.setBlockMode('true');
 
       // change the document once...
       this.cm.setValue('11');
@@ -223,7 +223,7 @@ describe('The CodeMirrorBlocks Class', function() {
     });
 
     it('should unrender itself when block mode is turned off', function() {
-      this.blocks.setBlockMode(true);
+      this.blocks.setBlockMode('blocks');
       this.cm.setValue('1');
       expect(this.cm.getAllMarks().length).toBe(1);
       this.blocks.setBlockMode(false);
@@ -234,7 +234,7 @@ describe('The CodeMirrorBlocks Class', function() {
   describe('events,', function() {
     beforeEach(function() {
       this.cm.setValue('11');
-      this.blocks.setBlockMode(true);
+      this.blocks.setBlockMode('blocks');
       this.literal = this.blocks.ast.rootNodes[0];
     });
 
