@@ -49,14 +49,11 @@ export class AST {
   }
 
   getNodeArray() {
-    var literals = [];
+    var nodes = [];
     for (let rootNode of this.rootNodes) {
-      if(rootNode)
-      for (let node of rootNode) {
-        literals.push(node);
-      }
+      nodes = nodes.concat(Array.from(rootNode));
     }
-    return literals;
+    return nodes;
   }
 }
 
