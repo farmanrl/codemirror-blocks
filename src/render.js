@@ -34,36 +34,51 @@ export function renderHTMLString(node) {
   return nodeEl;
 }
 
-export function prepareTransition(ast, cm) {
-  let scroller = cm.getScrollerElement();
-  let {left: offsetLeft, top: offsetTop} = scroller.getBoundingClientRect();
-  return ast.getLiterals().map(function({el: lit}) {
-    if(lit.offsetWidth === 0 && lit.offsetHeight === 0) {
-      return false;
-    }
-    let clone = lit.cloneNode(true);
-    let {left: litLeft, top: litTop} = lit.getBoundingClientRect();
-    clone.style.top = parseInt((litTop - offsetTop) + scroller.scrollTop) + "px";
-    clone.style.left= parseInt((litLeft- offsetLeft)+ scroller.scrollLeft)+ "px";
-    clone.style.position = "absolute";
-    clone.style.animation = "none";
-    scroller.appendChild(clone);
-    return clone;
+// clone all literals for visible elements, and fix their position to
+// match the existing literals
+export function prepareTransition(ast, parent) {
+  let {left: offsetLeft, top: offsetTop} = parent.getBoundingClientRect();
+  let nodes = ast.getNodeArray();
+  var clones = [];
+  return nodes.map(function(node){
+    if((node.el.offsetWidth === 0 && node.el.offsetHeight === 0)){
+        return false;
+      } else {
+        let {left, top, width, height} = node.el.getBoundingClientRect();
+        let clone = node.el.cloneNode(node.type==="literal"); // only deep copy literals
+        clone.className = node.el.className; // preserve className on all nodes
+        clone.style.top = (top - offsetTop) + parent.scrollTop  + "px";
+        clone.style.left= (left- offsetLeft)+ parent.scrollLeft + "px";
+        clone.style.width     = width  + "px";
+        clone.style.height    = height + "px";
+        clone.style.display   = "inline-block";
+        clone.style.position  = "absolute";
+        clone.style.animation = "none";
+        parent.appendChild(clone);
+        return clone;
+      }
   });
 }
-export function renderTransition(clones, ast, cm) {
+
+// find out where those literals are now, and move clones of visible
+// literals to match the new ones. After 1sec, remove all clones
+export function animateTransition(clones, ast, parent) {
   for (let node of ast.rootNodes) { node.el.style.animationName = "fadein"; }
-  let scroller = cm.getScrollerElement();
-  let {left: offsetLeft, top: offsetTop} = scroller.getBoundingClientRect();
-  ast.getLiterals().forEach(function({el: lit}, i) {
-    if(!clones[i] || lit.offsetWidth === 0 && lit.offsetHeight === 0) {
-      if(clones[i]) clones[i].remove();
-      return;
+  let {left: offsetLeft, top: offsetTop} = parent.getBoundingClientRect();
+  let nodes = ast.getNodeArray();
+  nodes.forEach(function(node, i){
+    // Don't animate if we're going to or from an invisible node
+    if(!clones[i] || (node.el.offsetWidth === 0 && node.el.offsetHeight === 0)) {
+      if(clones[i]) clones[i].remove(); 
+    } else {
+      let {left, top, width, height} = node.el.getBoundingClientRect();
+      clones[i].style.top  = (top - offsetTop) + parent.scrollTop + "px";
+      clones[i].style.left = (left- offsetLeft)+ parent.scrollLeft+ "px";
+      clones[i].style.width   = width  + "px";
+      clones[i].style.height  = height + "px";
     }
-    let {left: litLeft, top: litTop} = lit.getBoundingClientRect();
-    clones[i].style.top = parseInt((litTop - offsetTop) + scroller.scrollTop) + "px";
-    clones[i].style.left= parseInt((litLeft- offsetLeft)+ scroller.scrollLeft)+ "px";
   });
+  // remove all the clones
   setTimeout(() => clones.forEach((c) => { if(c) c.remove(); }), 1000);
 }
 

@@ -48,12 +48,12 @@ export class AST {
         || this.reverseRootNodes[0];
   }
 
-  getLiterals() {
+  getNodeArray() {
     var literals = [];
     for (let rootNode of this.rootNodes) {
       if(rootNode)
       for (let node of rootNode) {
-        if (node instanceof Literal) literals.push(node);
+        literals.push(node);
       }
     }
     return literals;

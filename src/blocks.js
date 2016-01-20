@@ -1,4 +1,4 @@
-import render, {prepareTransition, renderTransition} from './render';
+import render, {prepareTransition, animateTransition} from './render';
 import CodeMirror from 'codemirror';
 
 function getLocationFromEl(el) {
@@ -106,11 +106,12 @@ export default class CodeMirrorBlocks {
       this.cm.getAllMarks().forEach(marker => marker.clear());
     // animated transition: set up the animated clones, render, and animate
     } else if (this.blockMode) {
-      let clones = prepareTransition(this.ast, this.cm);
+      let scroller = this.cm.getScrollerElement();
+      let clones = prepareTransition(this.ast, scroller);
       this.cm.getWrapperElement().classList.remove(this.blockMode);
       this.cm.getWrapperElement().classList.add(mode);
       this.render();
-      renderTransition(clones, this.ast, this.cm);
+      animateTransition(clones, this.ast, scroller);
     // turning on block mode for the first time: just render
     } else {
       this.cm.getWrapperElement().classList.remove(this.blockMode);
