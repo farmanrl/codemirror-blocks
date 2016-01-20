@@ -1,4 +1,5 @@
 {{#> node type="unknown" title=node.msg}}
+<span class="blocks-hidden">(</span>
 <span class="blocks-operator">{{{renderNode node.elts.[0] cm callback}}}</span>
 <span class="blocks-args">
   {{#if node.elts.length}}
@@ -13,4 +14,5 @@
   {{/unless}}
   {{/each}}
 </span>
+<span class="blocks-hidden">)</span>
 {{/node}}

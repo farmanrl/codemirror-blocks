@@ -41,7 +41,7 @@
   &.blocks-editing, &.blocks-quarantine {
     border-color: @editing-border-color;
     &.blocks-error {
-      border-color: @error-border-color;
+      border-color: @error-border-color !important;
     }
   }
 
@@ -72,7 +72,6 @@
   .blocks-literal-symbol {
     color: @literal-symbol-color;
   }
-
 }
 
 .blocks-name {
@@ -290,7 +289,13 @@
   outline: 0;
 }
 
-.blocks-node { transition: all 1s linear; animation-duration: 1.5s; }
+.blocks-node { 
+  animation-duration: 1.5s; 
+  transition: left 1s linear,
+              top 1s linear, 
+              height 1s linear,
+              width 1s linear; 
+}
 @keyframes fadein {
     0% { opacity: 0; }
    50% { opacity: 0; }
