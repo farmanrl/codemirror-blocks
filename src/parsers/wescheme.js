@@ -92,14 +92,16 @@ function parseNode(node) {
       from,
       to,
       node.name.stx,
-      parseNode(node.expr)
+      parseNode(node.expr),
+      {'aria-label': 'variable definition: '+node.name.stx}
     );
   } else if (node instanceof structures.defStruct) {
     return new Struct(
       from,
       to,
       node.name.stx,
-      node.fields.map(parseNode).filter(item => item != null)
+      node.fields.map(parseNode).filter(item => item != null),
+      {'aria-label': 'structure definition: '+node.name.stx}
     );
   } else if (node instanceof structures.defFunc) {
     return new FunctionDefinition(
@@ -107,7 +109,8 @@ function parseNode(node) {
       to,
       node.name.stx,
       node.args.map(symbolNode => symbolNode.stx),
-      parseNode(node.body)
+      parseNode(node.body),
+      {'aria-label': 'function definition: '+node.name.stx}
     );
   } else if (node instanceof structures.symbolExpr) {
     return new Literal(from, to, node.stx, "symbol", {'aria-label':node.stx});
@@ -126,7 +129,7 @@ function parseNode(node) {
     }
     return new Literal(from, to, node, dataType, {'aria-label':aria});
   } else if (node instanceof structures.comment) {
-    return new Comment(from, to, ";"+node.txt);
+    return new Comment(from, to, ";"+node.txt, {'aria-label': 'comment: '+node.txt});
   } else if (node instanceof structures.unsupportedExpr) {
     return new Unknown(from, to, node.val.map(parseNode).filter(item => item !== null), {msg: node.errorMsg});
   }
