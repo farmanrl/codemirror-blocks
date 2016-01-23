@@ -1,4 +1,5 @@
 import uuid from 'node-uuid';
+require('babel-polyfill');
 
 // This is the root of the *Abstract Syntax Tree*.  Parser implementations are
 // required to spit out an `AST` instance.

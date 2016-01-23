@@ -46,7 +46,7 @@ export function prepareTransition(ast, parent) {
       } else {
         let {left, top, width, height} = node.el.getBoundingClientRect();
         let clone = node.el.cloneNode(node.type==="literal"); // only deep copy literals
-        clone.className = node.el.className; // preserve className on all nodes
+        if(node.type!=="literal") clone.className = "transition";
         clone.style.top = (top - offsetTop) + parent.scrollTop  + "px";
         clone.style.left= (left- offsetLeft)+ parent.scrollLeft + "px";
         clone.style.width     = width  + "px";

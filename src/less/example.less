@@ -301,12 +301,18 @@
   outline: 0;
 }
 
-.blocks-node { 
+.blocks-node, .transition { 
   animation-duration: 1.5s; 
   transition: left 1s linear,
               top 1s linear, 
               height 1s linear,
               width 1s linear; 
+}
+.transition {
+  border-radius: 15px;
+  border-width: 1px 3px;
+  border-style: dotted solid;
+  border-color: gray;
 }
 @keyframes fadein {
     0% { opacity: 0; }
