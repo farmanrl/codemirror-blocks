@@ -99,6 +99,7 @@ export default class CodeMirrorBlocks {
   }
 
   setBlockMode(mode) {
+      let scroller = this.cm.getScrollerElement();
     // not changing anything: no-op
     if (mode === this.blockMode) {  
       return;   
@@ -107,16 +108,15 @@ export default class CodeMirrorBlocks {
       this.cm.getAllMarks().forEach(marker => marker.clear());
     // animated transition: set up the animated clones, render, and animate
     } else if (this.blockMode) {
-      let scroller = this.cm.getScrollerElement();
       let clones = prepareTransition(this.ast, scroller);
-      this.cm.getWrapperElement().classList.remove(this.blockMode);
-      this.cm.getWrapperElement().classList.add(mode);
+      scroller.classList.remove(this.blockMode);
+      scroller.classList.add(mode);
       this.render();
       animateTransition(clones, this.ast, scroller);
     // turning on block mode for the first time: just render
     } else {
-      this.cm.getWrapperElement().classList.remove(this.blockMode);
-      this.cm.getWrapperElement().classList.add(mode);
+      scroller.classList.remove(this.blockMode);
+      scroller.classList.add(mode);
       this.render();
     }
     this.blockMode = mode;
