@@ -78,7 +78,10 @@ export function animateTransition(clones, ast, parent) {
     }
   });
   // remove all the clones
-  setTimeout(() => clones.forEach((c) => { if(c) c.remove(); }), 1000);
+  setTimeout(function() {
+    for (let node of ast.rootNodes) { node.el.style.animationName = ""; }
+    for (let c of clones) { if(c) c.remove(); }
+    }, 1000);
 }
 
 export default function render(rootNode, cm, options={}) {
