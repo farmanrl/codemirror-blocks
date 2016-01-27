@@ -1,4 +1,4 @@
-/* globals jasmine describe it expect beforeEach afterEach spyOn */
+/* globals jasmine describe it expect beforeEach spyOn */
 import CodeMirrorBlocks, {BlockMarker} from '../src/blocks';
 import CodeMirror from 'codemirror';
 import ExampleParser from '../example/parser';
@@ -376,10 +376,11 @@ describe('The CodeMirrorBlocks Class', function() {
           expect(this.cm.getValue()).toBe(' 54');
           expect(document.execCommand).toHaveBeenCalledWith('cut');
         });
-
+/*
         xit('should create an activeElement with the text to be copied', function() {
           // TODO: figure out how to test this.
         });
+*/
       });
     });
 

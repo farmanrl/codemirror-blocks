@@ -39,24 +39,23 @@ export function renderHTMLString(node) {
 export function prepareTransition(ast, parent) {
   let {left: offsetLeft, top: offsetTop} = parent.getBoundingClientRect();
   let nodes = ast.getNodeArray();
-  var clones = [];
   return nodes.map(function(node){
     if((node.el.offsetWidth === 0 && node.el.offsetHeight === 0)){
-        return false;
-      } else {
-        let {left, top, width, height} = node.el.getBoundingClientRect();
-        let clone = node.el.cloneNode(node.type==="literal"); // only deep copy literals
-        if(node.type!=="literal") clone.className = "transition";
-        clone.style.top = (top - offsetTop) + parent.scrollTop  + "px";
-        clone.style.left= (left- offsetLeft)+ parent.scrollLeft + "px";
-        clone.style.width     = width  + "px";
-        clone.style.height    = height + "px";
-        clone.style.display   = "inline-block";
-        clone.style.position  = "absolute";
-        clone.style.animation = "none";
-        parent.appendChild(clone);
-        return clone;
-      }
+      return false;
+    } else {
+      let {left, top, width, height} = node.el.getBoundingClientRect();
+      let clone = node.el.cloneNode(node.type==="literal"); // only deep copy literals
+      if(node.type!=="literal") clone.className = "transition";
+      clone.style.top = (top - offsetTop) + parent.scrollTop  + "px";
+      clone.style.left= (left- offsetLeft)+ parent.scrollLeft + "px";
+      clone.style.width     = width  + "px";
+      clone.style.height    = height + "px";
+      clone.style.display   = "inline-block";
+      clone.style.position  = "absolute";
+      clone.style.animation = "none";
+      parent.appendChild(clone);
+      return clone;
+    }
   });
 }
 
@@ -100,7 +99,7 @@ export default function render(rootNode, cm, options={}) {
       node.el.classList.add('blocks-hidden');
     }
   }
-  cm.markText(rootNode.from, rootNode.to, {replacedWith: rootNodeFrag.firstChild.firstChild});
+  cm.markText(rootNode.from, rootNode.to, {replacedWith: rootNodeFrag.firstChild.firstChild, node: rootNode});
   return rootNodeFrag;
 }
 

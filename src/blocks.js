@@ -99,21 +99,21 @@ export default class CodeMirrorBlocks {
   }
 
   setBlockMode(mode) {
-      let scroller = this.cm.getScrollerElement();
+    let scroller = this.cm.getScrollerElement();
     // not changing anything: no-op
     if (mode === this.blockMode) {  
       return;   
-    // turning off blocks: clear all markers
+      // turning off blocks: clear all markers
     } else if(!mode) {
       this.cm.getAllMarks().forEach(marker => marker.clear());
-    // animated transition: set up the animated clones, render, and animate
+      // animated transition: set up the animated clones, render, and animate
     } else if (this.blockMode) {
       let clones = prepareTransition(this.ast, scroller);
       scroller.classList.remove(this.blockMode);
       scroller.classList.add(mode);
       this.render();
       animateTransition(clones, this.ast, scroller);
-    // turning on block mode for the first time: just render
+      // turning on block mode for the first time: just render
     } else {
       scroller.classList.remove(this.blockMode);
       scroller.classList.add(mode);
@@ -129,6 +129,7 @@ export default class CodeMirrorBlocks {
   }
 
   markText(from, to, options) {
+    function poscmp(a, b) { return a.line - b.line || a.ch - b.ch; }
     let supportedOptions = new Set(['css','className','title']);
     let hasOptions = false;
     for (let option in options) {
@@ -143,19 +144,24 @@ export default class CodeMirrorBlocks {
     }
 
     let marks = this.cm.findMarks(from, to);
+    // find marks that are blocks, and apply the styling to node between [from, to]
     for (let mark of marks) {
       if (mark.replacedWith && mark.replacedWith.classList.contains('blocks-node')) {
-        if (options.css) {
-          mark.replacedWith.style.cssText = options.css;
+        for(let node of mark.node){
+          if((poscmp(from, node.from) < 1) && (poscmp(to, node.to) > -1)){
+            if (options.css) {
+              node.el.style.cssText = options.css;
+            }
+            if (options.className) {
+              node.el.className += ' '+options.className;
+            }
+            if (options.title) {
+              node.el.title = options.title;
+            }
+            mark[MARKER] = new BlockMarker(mark, options);
+            return mark[MARKER]; // we should only find one that is a blocks-node
+          }
         }
-        if (options.className) {
-          mark.replacedWith.className += ' '+options.className;
-        }
-        if (options.title) {
-          mark.replacedWith.title = options.title;
-        }
-        mark[MARKER] = new BlockMarker(mark, options);
-        return mark[MARKER]; // we should only find one that is a blocks-node
       }
     }
     // didn't find a codemirror mark, just pass through.
@@ -407,7 +413,7 @@ export default class CodeMirrorBlocks {
   }
 
   dropOntoLiteral(sourceNode, destinationNode) {
-    let sourceNodeText = this.cm.getRange(sourceNode.from, sourceNode.to)
+    let sourceNodeText = this.cm.getRange(sourceNode.from, sourceNode.to);
     if (this.cm.indexFromPos(sourceNode.from) < this.cm.indexFromPos(destinationNode.from)) {
       this.cm.replaceRange(sourceNodeText, destinationNode.from, destinationNode.to);
       this.cm.replaceRange('', sourceNode.from, sourceNode.to);

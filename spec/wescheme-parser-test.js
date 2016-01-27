@@ -1,8 +1,7 @@
-/* globals jasmine describe it expect beforeEach afterEach spyOn */
-import CodeMirrorBlocks, {BlockMarker} from '../src/blocks';
+/* globals describe it expect beforeEach  */
+import CodeMirrorBlocks from '../src/blocks';
 import CodeMirror from 'codemirror';
 import ExampleParser from '../src/parsers/wescheme.js';
-var render = require('../src/render');
 
 function keydown(keyCode, other={}) {
   let event = new CustomEvent('keydown', {bubbles: true});
