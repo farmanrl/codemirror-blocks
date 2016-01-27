@@ -460,6 +460,10 @@ export default class CodeMirrorBlocks {
       return;
     }
 
+    // a node cannot be dropped into a child of itself
+    if(destinationNode && sourceNode.el.contains(destinationNode.el)) {
+      return;
+    }
     this.cm.operation(() => {
       if (destinationNode && destinationNode.type == 'literal') {
         this.dropOntoLiteral(sourceNode, destinationNode);
