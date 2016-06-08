@@ -38,10 +38,10 @@ function parse(input) {
     if (isKw(kw)) input.next();
     else input.croak("Expecting keyword: \"" + kw + "\"");
   }
-  // function skipOp(op) {
-  //   if (isOp(op)) input.next();
-  //   else input.croak("Expecting operator: \"" + op + "\"");
-  // }
+  function skipOp(op) {
+    if (isOp(op)) input.next();
+   else input.croak("Expecting operator: \"" + op + "\"");
+  }
   function unexpected() {
     input.croak("Unexpected token: " + JSON.stringify(input.peek()));
   }
